@@ -1,33 +1,34 @@
-# --- Scraper Configuration ---
-CATEGORIES = ["Track Hoe", "Dozer", "Grader", "Pay Loader"]
+# --- Private/Small Seller Configuration ---
+TARGET_ASSETS = ["Track Hoe", "Dozer", "Grader", "Pay Loader"]
 MAX_PRICE = 100000
 
-# Hallmarks of a private/small dealer listing
-PRIVATE_KEYWORDS = [
-    "OBO", "Or Best Offer", "Retiring", "Must move", 
-    "Cash only", "Private sale", "Individual", "Retired"
+# High-intent private seller keywords
+PRIVATE_INDICATORS = [
+    "OBO", "Or Best Offer", "Retiring", "Must sell", 
+    "Cash only", "Individual", "Retired", "Personal use",
+    "Negotiable", "No dealers", "Local pickup"
 ]
 
-# TARGET LIST: Focus on these models known to hit <$100k in private sales
-TARGETS = {
-    "Track Hoe": ["CAT 320", "Deere 160G", "Komatsu PC210", "Hitachi ZX"],
-    "Dozer": ["CAT D3", "CAT D5", "Deere 650", "Case 850"],
-    "Grader": ["CAT 12G", "CAT 140G", "Deere 670"],
-    "Pay Loader": ["CAT 924", "Deere 544", "Case 621"]
-}
-
-def is_private_deal(description):
+def is_private_listing(data):
     """
-    Filters for private seller language. 
-    Big dealers use corporate templates; individuals use 'OBO' and 'Retired'.
+    Identifies a private listing by checking for 'individual' 
+    keywords and avoiding dealer-specific patterns.
     """
-    return any(word.lower() in description.lower() for word in PRIVATE_KEYWORDS)
-
-def process_listing(listing):
-    price = listing.get('price', 0)
-    description = listing.get('description', "")
+    text = f"{data.get('title', '')} {data.get('description', '')}".lower()
     
-    # Nexus Trigger: Under $100k + Private Seller Keywords
-    if price < MAX_PRICE and is_private_deal(description):
-        save_to_nexus(listing)
-        send_alert(listing)
+    # 1. Reject if it mentions a 'Dealer' or 'Inventory' (Large Dealership typicals)
+    if any(x in text for x in ["financing available", "visit our website", "stock number"]):
+        return False
+        
+    # 2. Check for private seller language
+    return any(word.lower() in text for word in PRIVATE_INDICATORS)
+
+def run_nexus_search():
+    # Example logic: Scan sources like Craigslist or FB Groups
+    listings = fetch_listings_from_source() 
+    for item in listings:
+        if item['price'] < MAX_PRICE and is_private_listing(item):
+            # Check if it matches your specific equipment types
+            if any(asset.lower() in item['title'].lower() for asset in TARGET_ASSETS):
+                save_to_db(item)
+                print(f"🔥 Private Deal Found: {item['title']} - ${item['price']}")
