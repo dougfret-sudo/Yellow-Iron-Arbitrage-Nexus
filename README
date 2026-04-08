@@ -8,15 +8,25 @@ The Yellow Iron Nexus is a specialized scraping engine designed to monitor high-
 - **[Scanner Engine]**: Playwright-based automation that cycles through local FSBO marketplaces (Craigslist, FB Marketplace) daily at 08:00 AM.
 - **[Asset Targets]**: Track Hoes, Dozers, Graders, and Pay Loaders under $100,000.
 - **[Filter Logic]**: Strict "Private Seller" detection. Rejects corporate templates; searches for motivated keywords (OBO, Retired, Must Move).
-- **[Nexus Alert]**: Triggers database logging and terminal alerts when a listing meets ROI thresholds.
+- **[Nexus Alert]**: Automated Email alerts providing clickable links and listing descriptions for instant deal evaluation.
 
 ---
 
 ## 🛠️ Technical Stack
-- **Engine**: Python (Playwright / BeautifulSoup)
-- **Data Storage**: SQLite (Master Tracking Table + `nexus_priority_deals` View)
-- **Scheduling**: Python `schedule` library (Daily 24-hour cycle)
-- **Notification**: Console-based Nexus Alerts (Extensible to Twilio/SMS).
+- **Engine**: Python 3.x (Playwright / BeautifulSoup4)
+- **Environment**: `python-dotenv` for secure credential management.
+- **Data Storage**: SQLite3 (Master Tracking Table + `nexus_priority_deals` View).
+- **Scheduling**: Python `schedule` library (Automated 24-hour cycle).
+- **Notification**: SMTP (Email-based alerts).
 
 ## 📍 Target Regions
-- Detroit, Ann Arbor, Lansing, and Flint (Michigan FSBO Hubs)
+- Detroit, Ann Arbor, Lansing, and Flint (Michigan FSBO Hubs).
+
+---
+
+## 🚀 Getting Started
+
+### 1. Installation
+```bash
+pip install playwright beautifulsoup4 python-dotenv schedule
+playwright install chromium
