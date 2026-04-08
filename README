@@ -2,16 +2,21 @@
 **Industrial Equipment Scraper & Real-Time Deal Tracker**
 
 ## 🏗️ Overview
-The Yellow Iron Nexus is a specialized scraping engine designed to monitor high-stakes industrial marketplaces for specific "Yellow Iron" assets (Excavators, Dozers, Track Hoes). It bridges the gap between raw marketplace data and a private buyer network.
+The Yellow Iron Nexus is a specialized scraping engine designed to monitor high-stakes industrial marketplaces for private "Yellow Iron" assets. It targets high-demand machinery from individual sellers and small dealers, bypassing large corporate auction houses.
 
 ### ⚙️ System Logic
-- **[Scanner Engine]**: Python-based scraper that monitors specialized boards and auctions for targeted SKUs (e.g., Caterpillar 320BL, Deere 350G).
-- **[Filter Logic]**: Deterministic checks for "Particulars" (Hours, Year, Location, Condition).
-- **[Nexus Alert]**: Triggers a silent forward (SMS/Email) to the buyer network when a deal meets the ROI threshold.
+- **[Scanner Engine]**: Playwright-based automation that cycles through local FSBO marketplaces (Craigslist, FB Marketplace) daily at 08:00 AM.
+- **[Asset Targets]**: Track Hoes, Dozers, Graders, and Pay Loaders under $100,000.
+- **[Filter Logic]**: Strict "Private Seller" detection. Rejects corporate templates; searches for motivated keywords (OBO, Retired, Must Move).
+- **[Nexus Alert]**: Triggers database logging and terminal alerts when a listing meets ROI thresholds.
 
 ---
 
 ## 🛠️ Technical Stack
-- **Engine**: Python (BeautifulSoup / Scrapy)
-- **Data Storage**: SQL (Tracking historical prices to spot "broken" deals)
-- **Notification**: Webhook-to-SMS (Twilio or Email-to-Text)
+- **Engine**: Python (Playwright / BeautifulSoup)
+- **Data Storage**: SQLite (Master Tracking Table + `nexus_priority_deals` View)
+- **Scheduling**: Python `schedule` library (Daily 24-hour cycle)
+- **Notification**: Console-based Nexus Alerts (Extensible to Twilio/SMS).
+
+## 📍 Target Regions
+- Detroit, Ann Arbor, Lansing, and Flint (Michigan FSBO Hubs)
